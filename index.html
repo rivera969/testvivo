@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vivo Squid Pressure Washing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0; padding: 0;
+      background: linear-gradient(135deg, #0b3d91, #1e90ff, #0f1e3d);
+      color: #e0f0ff; min-height: 100vh;
+    }
+    header {
+      position: relative; height: 100vh; overflow: hidden;
+      color: white; text-align: center;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      padding: 0 20px;
+      pointer-events: none; /* allows clicks to pass through video */
+    }
+    header video {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; z-index: -1;
+    }
+    header h1, header p { pointer-events: auto; }
+
+    header h1 {
+      font-size: 58px; margin-bottom: 10px;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+      color: #48c4ff;
+    }
+    header p {
+      font-size: 22px; font-family: 'Orbitron', sans-serif;
+      color: #ffe600;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+      letter-spacing: 1.5px; animation: pulse 3s infinite;
+    }
+    @keyframes pulse { 0% { text-shadow: 2px 2px 8px rgba(0,0,0,0.9);} 50% { text-shadow: 2px 2px 12px rgba(255,230,0,0.8);} 100% { text-shadow: 2px 2px 8px rgba(0,0,0,0.9);} }
+    nav { background: #002244; text-align: center; padding: 15px; position: sticky; top: 0; z-index: 1000; }
+    nav a { color: #aee9ff; text-decoration: none; margin: 0 15px; font-weight: 600; font-size: 16px; transition: color 0.3s ease; }
+    nav a:hover { color: #ffffff; text-decoration: underline; }
+
+    /* Sections */
+    section { max-width: 1000px; margin: 40px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: #333; }
+    section h2 { font-size: 26px; margin-bottom: 20px; color: #003366; text-align: center; }
+
+    /* Services grid and entrance animations (scroll-based) */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .service-card {
+      background: linear-gradient(to bottom right, #003f7f, #1a75bb);
+      color: #e6f7ff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,85,170,0.4);
+      opacity: 0; /* hidden initially */
+      transform: translateY(30px) scale(0.97);
+      transition: transform 420ms cubic-bezier(.2,.8,.2,1), opacity 420ms ease, box-shadow 420ms ease;
+      will-change: transform, opacity;
+    }
+
+    /* Starting directions */
+    .service-card.from-left  { transform: translateX(-60px) scale(0.97); }
+    .service-card.from-right { transform: translateX(60px) scale(0.97); }
+    .service-card.from-up    { transform: translateY(-60px) scale(0.97); }
+    .service-card.from-down  { transform: translateY(60px) scale(0.97); }
+
+    /* When in view */
+    .service-card.in-view {
+      opacity: 1; transform: translateX(0) translateY(0) scale(1);
+      box-shadow: 0 10px 25px rgba(0,85,170,0.25);
+    }
+
+    /* Small stagger delays */
+    .services-grid .service-card:nth-child(1) { transition-delay: 0.06s; }
+    .services-grid .service-card:nth-child(2) { transition-delay: 0.12s; }
+    .services-grid .service-card:nth-child(3) { transition-delay: 0.18s; }
+    .services-grid .service-card:nth-child(4) { transition-delay: 0.24s; }
+    .services-grid .service-card:nth-child(5) { transition-delay: 0.30s; }
+
+    .service-card h3 { margin-top: 0; font-size: 20px; color: #aee9ff; }
+
+    /* Button Styling */
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffcc00, #ff9900);
+      color: #003366;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .btn:hover {
+      background: linear-gradient(135deg, #ffdd33, #ffaa33);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    .btn:focus {
+      outline: 3px solid #ffcc00;
+      outline-offset: 2px;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto;
+      background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
+    }
+    .modal-content {
+      background: #fff; padding: 20px; border-radius: 10px; max-width: 500px; width: 90%;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    .close-btn { float: right; font-size: 20px; cursor: pointer; color: #333; }
+    .modal-content h3 { margin-top: 0; color: #003366; }
+    .modal-content form { display: flex; flex-direction: column; gap: 12px; }
+    .modal-content input, .modal-content textarea {
+      padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;
+    }
+    .modal-content button {
+      background: #003f7f; color: #fff; border: none; border-radius: 6px; padding: 12px; font-size: 14px;
+      cursor: pointer; transition: background 0.3s ease;
+    }
+    .modal-content button:hover { background: #002b55; }
+
+    /* Gallery styles */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .gallery img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Accessibility: reduce motion */
+    @media (prefers-reduced-motion: reduce) {
+      .service-card { transition: none !important; transform: none !important; opacity: 1 !important; }
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 768px) { header h1 { font-size: 40px; } header p { font-size: 18px; } nav a { margin: 0 10px; font-size: 14px; } section { margin: 20px; padding: 15px; } }
+    @media (max-width: 480px) { header h1 { font-size: 28px; } header p { font-size: 16px; } nav { padding: 10px; } nav a { margin: 0 5px; font-size: 12px; } .btn { padding: 10px 18px; font-size: 14px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="your-video-file.mp4" type="video/mp4">
+    </video>
+    <h1>Vivo Squid Pressure Washing</h1>
+    <p>Residential & Commercial Power Washing in Birmingham, Alabama</p>
+  </header>
+
+  <nav>
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <section id="services">
+    <h2>Our Services</h2>
+    <div class="services-grid">
+      <div class="service-card from-left"><h3>Driveway & Sidewalk</h3><p>Remove grime and stains from your paths with high-pressure cleaning.</p></div>
+      <div class="service-card from-up"><h3>House & Siding Washing</h3><p>Gentle washing to restore your home’s exterior beauty.</p></div>
+      <div class="service-card from-right"><h3>Roof Soft Washing</h3><p>Low-pressure technique to clean roofs without damage.</p></div>
+      <div class="service-card from-down"><h3>Deck & Patio Cleaning</h3><p>Brighten up your outdoor spaces and remove slippery buildup.</p></div>
+      <div class="service-card from-up"><h3>Commercial Buildings</h3><p>Professional washing to keep your business exterior sharp.</p></div>
+    </div>
+  </section>
+
+  <section id="about" class="about-section">
+    <div class="about-container">
+      <div class="about-image"><img src="https://i.imgur.com/xW2E6Gn.jpg" alt="Pressure Washing Team" /></div>
+      <div class="about-text"><h2>About Us</h2><p>With years of experience and professional-grade equipment, we provide high-quality pressure washing services that restore the beauty and value of your property. We are committed to excellence, punctuality, and customer satisfaction.</p></div>
+    </div>
+  </section>
+
+  <section id="gallery">
+    <h2>Before & After Gallery</h2>
+    <div class="gallery">
+      <img src="https://i.imgur.com/EZzH9vM.jpg" alt="Pressure washing driveway" />
+      <img src="https://i.imgur.com/6a5VjXr.jpg" alt="Pressure washing brick house" />
+      <img src="https://i.imgur.com/cqluY0F.jpg" alt="Pressure washing home" />
+      <img src="https://i.imgur.com/R4C0yUL.jpg" alt="Commercial pressure washing" />
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <p><strong>Phone:</strong> (205) 613-1596</p>
+    <p><strong>Email:</strong> edgar@pressurewashalabama.com</p>
+    <a href="#" class="btn" id="openModal">Request a Free Quote</a>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Vivo Squid Pressure Washing. All rights reserved.</p>
+  </footer>
+
+  <!-- Modal for Request a Free Quote -->
+  <div id="quoteModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeModal">&times;</span>
+      <h3>Request a Free Quote</h3>
+      <form>
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <input type="tel" name="phone" placeholder="Your Phone" required>
+        <textarea name="message" rows="4" placeholder="Describe your project" required></textarea>
+        <button type="submit">Send Request</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // IntersectionObserver to trigger entrance animations
+    document.addEventListener('DOMContentLoaded', function () {
+      const cards = document.querySelectorAll('.service-card');
+      if (!('IntersectionObserver' in window)) {
+        cards.forEach(c => c.classList.add('in-view'));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      cards.forEach(card => observer.observe(card));
+    });
+
+    // Modal logic
+    const modal = document.getElementById('quoteModal');
+    const openBtn = document.getElementById('openModal');
+    const closeBtn = document.getElementById('closeModal');
+
+    if(openBtn) {
+      openBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        modal.style.display = 'flex';
+      });
+    }
+
+    if(closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+    }
+
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) modal.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
